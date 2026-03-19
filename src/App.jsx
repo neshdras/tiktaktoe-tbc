@@ -31,6 +31,8 @@ export default function App(){
   const scoreO = useScore((state) => state.scoreO)
   const increaseScoreX = useScore((state) => state.increaseScoreX)
   const increaseScoreO = useScore((state) => state.increaseScoreO)
+  const resetScoreX = useScore((state) => state.resetScoreX)
+  const resetScoreO = useScore((state) => state.resetScoreO)
   const [isDisabled, setIsDisabled]= useState(false)
 
   const [vsBot, setVsBot] = useState(true)
@@ -86,6 +88,8 @@ const isDraw = !winner && board.every(Boolean)
 
   function gameMode(){
     setVsBot(!vsBot)
+    resetScoreX()
+    resetScoreO()
     reset()
   }
 
