@@ -31,8 +31,8 @@ export default function App(){
   const scoreO = useScore((state) => state.scoreO)
   const increaseScoreX = useScore((state) => state.increaseScoreX)
   const increaseScoreO = useScore((state) => state.increaseScoreO)
-  // const [scoreX, setScoreX] = useState(0)
-  // const [scoreO, setScoreO] = useState(0)
+  const [vsBot, setVsBot] = useState(true)
+
 
   // Retourne true si chaque élément du tableau est "truthy"
   // C'est à dire ni null, ni undefined
@@ -42,24 +42,42 @@ const isDraw = !winner && board.every(Boolean)
     // Est ce qu'il n'y a pas quelquechose sur la case
     if (board[i] || winner) return
     // Copie du tableau (constante state) pour pouvoir le modifier
-    const newBoard = [...board]
-    newBoard[i] = isX ? 'X' : 'O'
-    setBoard(newBoard)
-    setIsX(!isX)
-    const newWinner = getWinner(newBoard)
-      if (newWinner === "X"){
-    increaseScoreX()
-  } else if (newWinner === "O"){
-    increaseScoreO()
+      const newBoard = [...board]
+      newBoard[i] = isX ? 'X' : 'O'
+      setBoard(newBoard)
+      if (!vsBot)
+        setIsX(!isX)
+
+      if (isX && vsBot) {
+        const winBot = getWinner(newBoard)
+        if (winBot) return
+
+        let botBoard = []
+        for (let j = 0; j < newBoard.length; j++) {
+          if (!newBoard[j]) {
+            botBoard.push(j)
+          }
+        }
+        const rand = Math.floor(Math.random()* botBoard.length)
+        newBoard[botBoard[rand]] = "O"
+      }
+  const newWinner = getWinner(newBoard)
+  if (newWinner === "X") increaseScoreX() 
+  else if (newWinner === "O") increaseScoreO()
   }
-  }
+
+
   function reset(){
     setBoard(Array(9).fill(null))
     setIsX(true)
   }
+
+  function gameMode(){
+    setVsBot(!vsBot)
+  }
   return(
     <div className="game">
-      <h1>Tik Tak Toe</h1>
+      <h1>Tic Tac Toe</h1>
       <p ><img src="/img/cross.png"  className="status-img"/>: {scoreX} /  {scoreO} : <img src="/img/circle.png"  className="status-img" /> </p>
       <p className="status">
         {winner 
@@ -76,6 +94,8 @@ const isDraw = !winner && board.every(Boolean)
         ))}
       </div>
       <button className="reset" onClick={reset}>Rejouer</button>
+      <br />
+      <button className="reset" onClick={() => gameMode()}>{!vsBot ? <span>Jouer contre l'ordinateur</span> : <span>Mode 2 joueur</span>}</button>
     </div>
   )
 }
