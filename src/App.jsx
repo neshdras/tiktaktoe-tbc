@@ -31,6 +31,8 @@ export default function App(){
   const scoreO = useScore((state) => state.scoreO)
   const increaseScoreX = useScore((state) => state.increaseScoreX)
   const increaseScoreO = useScore((state) => state.increaseScoreO)
+  const [isDisabled, setIsDisabled]= useState(false)
+
   const [vsBot, setVsBot] = useState(true)
 
 
@@ -47,23 +49,31 @@ const isDraw = !winner && board.every(Boolean)
       setBoard(newBoard)
       if (!vsBot)
         setIsX(!isX)
+      const newWinner = getWinner(newBoard)
+      if (newWinner === "X") {increaseScoreX() } 
+      else if (newWinner === "O") {increaseScoreO()}
 
       if (isX && vsBot) {
         const winBot = getWinner(newBoard)
         if (winBot) return
-
-        let botBoard = []
-        for (let j = 0; j < newBoard.length; j++) {
-          if (!newBoard[j]) {
-            botBoard.push(j)
+        setIsDisabled(true)
+        setTimeout(() => {
+          
+          let botBoard = []
+          for (let j = 0; j < newBoard.length; j++) {
+            if (!newBoard[j]) {
+              botBoard.push(j)
+            }
           }
-        }
-        const rand = Math.floor(Math.random()* botBoard.length)
-        newBoard[botBoard[rand]] = "O"
+          const rand = Math.floor(Math.random()* botBoard.length)
+          newBoard[botBoard[rand]] = "O"
+          const newWinner2 = getWinner(newBoard)
+          if (newWinner2 === "X") {increaseScoreX();console.log(newWinner2) } 
+          else if (newWinner2 === "O") {increaseScoreO(); console.log(newWinner2)}
+          
+          setIsDisabled(false)
+        }, 500);
       }
-  const newWinner = getWinner(newBoard)
-  if (newWinner === "X") increaseScoreX() 
-  else if (newWinner === "O") increaseScoreO()
   }
 
 
@@ -74,7 +84,9 @@ const isDraw = !winner && board.every(Boolean)
 
   function gameMode(){
     setVsBot(!vsBot)
+    reset()
   }
+
   return(
     <div className="game">
       <h1>Tic Tac Toe</h1>
@@ -88,7 +100,7 @@ const isDraw = !winner && board.every(Boolean)
       </p>
       <div className="board">
         {board.map((cell, i) => (
-          <button key={i} className="cell" onClick={() => handleClick(i)}>
+          <button disabled={isDisabled} key={i} className="cell" onClick={() => handleClick(i)}>
             {cell && <img src={cell === 'X' ? '/img/cross.png' : '/img/circle.png'}/>}
           </button>
         ))}

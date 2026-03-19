@@ -5,5 +5,5 @@ export const useScore = create((set) => ({
     scoreX: 0,
     scoreO: 0, 
     increaseScoreX: () => set((state) => ({scoreX: state.scoreX + 1})), 
-    increaseScoreO: () => set((state) => ({scoreO: state.scoreO + 1})) 
+    increaseScoreO: () => set((state) => ({scoreO: state.scoreO + 1}))
 }))
