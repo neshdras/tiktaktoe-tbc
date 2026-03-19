@@ -41,14 +41,16 @@ export default function App(){
 const isDraw = !winner && board.every(Boolean)
 
   function handleClick(i){
+    const timeBot = Math.floor(Math.random()*(2000-500))+ 500
+
     // Est ce qu'il n'y a pas quelquechose sur la case
     if (board[i] || winner) return
     // Copie du tableau (constante state) pour pouvoir le modifier
       const newBoard = [...board]
       newBoard[i] = isX ? 'X' : 'O'
       setBoard(newBoard)
-      if (!vsBot)
-        setIsX(!isX)
+
+      setIsX(!isX)
       const newWinner = getWinner(newBoard)
       if (newWinner === "X") {increaseScoreX() } 
       else if (newWinner === "O") {increaseScoreO()}
@@ -68,11 +70,11 @@ const isDraw = !winner && board.every(Boolean)
           const rand = Math.floor(Math.random()* botBoard.length)
           newBoard[botBoard[rand]] = "O"
           const newWinner2 = getWinner(newBoard)
-          if (newWinner2 === "X") {increaseScoreX();console.log(newWinner2) } 
-          else if (newWinner2 === "O") {increaseScoreO(); console.log(newWinner2)}
-          
+          if (newWinner2 === "X") {increaseScoreX() } 
+          else if (newWinner2 === "O") {increaseScoreO()}
+          setIsX(true)
           setIsDisabled(false)
-        }, 500);
+        }, timeBot);
       }
   }
 
